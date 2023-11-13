@@ -1,7 +1,9 @@
 import { useState } from "react";
 import useAsyncStorage from "./src/hooks/use-async-storage";
 import {
+  Alert,
   Button,
+  FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -14,21 +16,25 @@ import { CategoryPicker, ClientPicker } from "./src/components/pickers";
 import TextInputField from "./src/components/inputs/text-input-field/text-input-field";
 import * as Crypto from "expo-crypto";
 
+type CategoryType = "Goal Evidence" | "Support Coordination" | "Active Duty";
+
 type NoteType = {
   id: string;
   content: string;
   client: string;
-  category: "Goal Evidence" | "Support Coordination" | "Active Duty";
+  category: CategoryType;
+};
+
+const initialNote = {
+  id: "",
+  content: "",
+  client: "",
+  category: "Goal Evidence" as CategoryType,
 };
 
 export default function App() {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
-  const [newNote, setNewNote] = useState<NoteType>({
-    id: "",
-    content: "",
-    client: "",
-    category: "Goal Evidence",
-  });
+  const [newNote, setNewNote] = useState<NoteType>(initialNote);
 
   const {
     storedValue: notes,
@@ -45,7 +51,18 @@ export default function App() {
   };
 
   const handleSave = async () => {
-    await setValue([...notes, { ...newNote, id: Crypto.randomUUID() }]);
+    try {
+      await setValue([...notes, { ...newNote, id: Crypto.randomUUID() }]);
+      setNewNote(initialNote);
+    } catch (error) {
+      Alert.alert("Error", "error on saving new note", [
+        {
+          text: "Try it again",
+        },
+      ]);
+    } finally {
+      setModalVisible(false);
+    }
   };
 
   return (
