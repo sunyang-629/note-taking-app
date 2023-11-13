@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { clients } from "../../../../data/data.json";
 import { Picker } from "@react-native-picker/picker";
 
@@ -9,6 +9,9 @@ interface IClientPickerProps {
 }
 
 const ClientPicker: FC<IClientPickerProps> = ({ value, onChange }) => {
+  useEffect(() => {
+    onChange(clients[0]);
+  }, []);
   return (
     <View style={styles.pickerContainer}>
       <Text style={styles.label}>Client:</Text>

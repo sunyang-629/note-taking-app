@@ -51,6 +51,12 @@ export default function App() {
   };
 
   const handleSave = async () => {
+    if (newNote.content.length <= 10)
+      return Alert.alert("Error", "The length of content must be above 10", [
+        {
+          text: "Try it again",
+        },
+      ]);
     try {
       await setValue([...notes, { ...newNote, id: Crypto.randomUUID() }]);
       setNewNote(initialNote);
@@ -65,18 +71,33 @@ export default function App() {
     }
   };
 
+  const renderItem = ({ item }: { item: NoteType }) => (
+    <View style={styles.noteContainer}>
+      <Text>Client: {item.client}</Text>
+      <Text>Content: {item.content}</Text>
+      <Text>Category: {item.category}</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Button title="Add New Note" onPress={() => setModalVisible(true)} />
       </View>
-      {notes.length === 0 ? (
-        <Text>
-          Uh-oh! No notes found. Time to get creative and jot something down!
-        </Text>
-      ) : (
-        <Text>{notes.length}</Text>
-      )}
+      <View style={{ width: "100%", margin: 10 }}>
+        {notes.length === 0 ? (
+          <Text>
+            Uh-oh! No notes found. Time to get creative and jot something down!
+          </Text>
+        ) : (
+          <FlatList
+            data={notes}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.flatListContainer}
+          />
+        )}
+      </View>
       <Modal visible={isModalVisible} animationType="slide">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -142,5 +163,15 @@ const styles = StyleSheet.create({
   },
   keyboardAvoidingContainer: {
     flex: 1,
+  },
+  flatListContainer: {
+    flexGrow: 1,
+  },
+  noteContainer: {
+    backgroundColor: "#f0f0f0",
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 8,
+    marginHorizontal: 10,
   },
 });
