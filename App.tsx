@@ -2,16 +2,20 @@ import { useState } from "react";
 import useAsyncStorage from "./src/hooks/use-async-storage";
 import {
   Button,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { clients, categories } from "./data/data.json";
-import { CategoryPicker } from "./src/components/pickers";
+import { CategoryPicker, ClientPicker } from "./src/components/pickers";
+import TextInputField from "./src/components/inputs/text-input-field/text-input-field";
+import * as Crypto from "expo-crypto";
 
 type NoteType = {
+  id: string;
   content: string;
   client: string;
   category: "Goal Evidence" | "Support Coordination" | "Active Duty";
@@ -20,6 +24,7 @@ type NoteType = {
 export default function App() {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [newNote, setNewNote] = useState<NoteType>({
+    id: "",
     content: "",
     client: "",
     category: "Goal Evidence",
@@ -39,28 +44,50 @@ export default function App() {
     return (value: string) => setNewNote((prev) => ({ ...prev, [key]: value }));
   };
 
-  if (notes.length === 0)
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Button title="Add New Note" onPress={() => setModalVisible(true)} />
-        </View>
+  const handleSave = async () => {
+    await setValue([...notes, { ...newNote, id: Crypto.randomUUID() }]);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Button title="Add New Note" onPress={() => setModalVisible(true)} />
+      </View>
+      {notes.length === 0 ? (
         <Text>
           Uh-oh! No notes found. Time to get creative and jot something down!
         </Text>
-        <Modal visible={isModalVisible} animationType="slide">
+      ) : (
+        <Text>{notes.length}</Text>
+      )}
+      <Modal visible={isModalVisible} animationType="slide">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingContainer}
+        >
           <View style={styles.modalContainer}>
             <CategoryPicker
               value={newNote.category}
               onChange={handleChangeValue("category")}
             />
+            <ClientPicker
+              value={newNote.client}
+              onChange={handleChangeValue("client")}
+            />
+            <TextInputField
+              title="Content"
+              value={newNote.content}
+              onChange={handleChangeValue("content")}
+            />
             <View style={styles.modalButtonsContainer}>
+              <Button title="Save" onPress={handleSave} />
               <Button title="Cancel" onPress={handleTogglingModal} />
             </View>
           </View>
-        </Modal>
-      </SafeAreaView>
-    );
+        </KeyboardAvoidingView>
+      </Modal>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +118,12 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
   },
   modalButtonsContainer: {
+    marginTop: 80,
     flexDirection: "row",
     justifyContent: "space-between",
+    width: "80%",
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
   },
 });
