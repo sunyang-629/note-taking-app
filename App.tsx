@@ -8,6 +8,8 @@ import {
   Text,
   View,
 } from "react-native";
+import { clients, categories } from "./data/data.json";
+import { CategoryPicker } from "./src/components/pickers";
 
 type NoteType = {
   content: string;
@@ -16,7 +18,12 @@ type NoteType = {
 };
 
 export default function App() {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [newNote, setNewNote] = useState<NoteType>({
+    content: "",
+    client: "",
+    category: "Goal Evidence",
+  });
 
   const {
     storedValue: notes,
@@ -26,6 +33,10 @@ export default function App() {
 
   const handleTogglingModal = () => {
     setModalVisible(!isModalVisible);
+  };
+
+  const handleChangeValue = (key: string) => {
+    return (value: string) => setNewNote((prev) => ({ ...prev, [key]: value }));
   };
 
   if (notes.length === 0)
@@ -39,7 +50,10 @@ export default function App() {
         </Text>
         <Modal visible={isModalVisible} animationType="slide">
           <View style={styles.modalContainer}>
-            <Text>add a new note</Text>
+            <CategoryPicker
+              value={newNote.category}
+              onChange={handleChangeValue("category")}
+            />
             <View style={styles.modalButtonsContainer}>
               <Button title="Cancel" onPress={handleTogglingModal} />
             </View>
