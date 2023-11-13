@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface IUseAsyncStorageProps<T> {
-  key: string;
-  initialValue: T;
-}
-
-const useAsyncStorage = <T>({
-  key,
-  initialValue,
-}: IUseAsyncStorageProps<T>) => {
+const useAsyncStorage = <T>(key: string, initialValue: T) => {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
 
   const getValue = async () => {
