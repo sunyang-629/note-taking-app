@@ -14,10 +14,10 @@ import {
   View,
 } from "react-native";
 import { CategoryPicker, ClientPicker } from "../components/pickers";
-import TextInputField from "../components/inputs/text-input-field/text-input-field";
 import * as Crypto from "expo-crypto";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../App";
+import { TextInputField } from "../components/inputs";
 
 type CategoryType = "Goal Evidence" | "Support Coordination" | "Active Duty";
 type Props = NativeStackScreenProps<AppStackParamList, "Home">;
@@ -29,7 +29,7 @@ export type NoteType = {
   category: CategoryType;
 };
 
-const initialNote = {
+export const initialNote = {
   id: "",
   content: "",
   client: "",
