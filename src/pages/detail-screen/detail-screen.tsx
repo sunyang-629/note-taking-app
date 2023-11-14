@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../App";
-import useAsyncStorage from "../hooks/use-async-storage";
-import { NoteType, initialNote } from "./home-screen";
-import { CategoryPicker, ClientPicker } from "../components/pickers";
-import { TextInputField } from "../components/inputs";
+import { AppStackParamList } from "../../../App";
+import useAsyncStorage from "../../hooks/use-async-storage";
+import { initialNote } from "../home-screen/home-screen";
+import { CategoryPicker, ClientPicker } from "../../components/pickers";
+import { TextInputField } from "../../components/inputs";
+import { NoteType } from "../../types/note";
 
 type Props = NativeStackScreenProps<AppStackParamList, "Detail">;
 

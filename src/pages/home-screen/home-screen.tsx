@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAsyncStorage from "../hooks/use-async-storage";
+import useAsyncStorage from "../../hooks/use-async-storage";
 import {
   Alert,
   Button,
@@ -13,21 +13,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CategoryPicker, ClientPicker } from "../components/pickers";
+import { CategoryPicker, ClientPicker } from "../../components/pickers";
 import * as Crypto from "expo-crypto";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackParamList } from "../../App";
-import { TextInputField } from "../components/inputs";
+import { AppStackParamList } from "../../../App";
+import { TextInputField } from "../../components/inputs";
+import { CategoryType, NoteType } from "../../types/note";
 
-type CategoryType = "Goal Evidence" | "Support Coordination" | "Active Duty";
 type Props = NativeStackScreenProps<AppStackParamList, "Home">;
-
-export type NoteType = {
-  id: string;
-  content: string;
-  client: string;
-  category: CategoryType;
-};
 
 export const initialNote = {
   id: "",
@@ -36,15 +29,14 @@ export const initialNote = {
   category: "Goal Evidence" as CategoryType,
 };
 
-const HomeScreen = ({ route, navigation }: Props) => {
+const HomeScreen = ({ navigation }: Props) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [newNote, setNewNote] = useState<NoteType>(initialNote);
 
-  const {
-    storedValue: notes,
-    setValue,
-    removeValue,
-  } = useAsyncStorage<NoteType[]>("notes", []);
+  const { storedValue: notes, setValue } = useAsyncStorage<NoteType[]>(
+    "notes",
+    []
+  );
 
   const handleTogglingModal = () => {
     setModalVisible(!isModalVisible);
@@ -92,7 +84,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Button title="Add New Note" onPress={() => setModalVisible(true)} />
+        <Button title="New Note" onPress={() => setModalVisible(true)} />
       </View>
       <View style={{ width: "100%", margin: 10 }}>
         {notes.length === 0 ? (
@@ -151,20 +143,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     marginBottom: 16,
-    // backgroundColor: "#eee",
     width: "100%",
   },
-  // addButtonContainer: {
-  //   position: "absolute",
-  //   top: 32,
-  //   right: 16,
-  // },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    // backgroundColor: "red",
   },
   modalButtonsContainer: {
     marginTop: 80,
