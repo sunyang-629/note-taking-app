@@ -8,6 +8,7 @@ const useAsyncStorage = <T>(key: string, initialValue: T) => {
     try {
       const item = await AsyncStorage.getItem(key);
       if (item !== null) {
+        console.log("set value");
         setStoredValue(JSON.parse(item));
       }
     } catch (error) {
@@ -35,6 +36,7 @@ const useAsyncStorage = <T>(key: string, initialValue: T) => {
   };
 
   useEffect(() => {
+    console.log("getvalue");
     getValue();
   }, []);
 
