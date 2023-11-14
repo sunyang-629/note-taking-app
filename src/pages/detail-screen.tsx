@@ -23,8 +23,6 @@ const DetailScreen = ({ route, navigation }: Props) => {
   } = useAsyncStorage<NoteType[]>("notes", []);
   const note = notes.find((n) => n.id === noteId);
 
-  console.log({ note });
-
   const handleRemoveNote = async () => {
     const newNoteList = notes.filter((n) => n.id !== noteId);
     try {

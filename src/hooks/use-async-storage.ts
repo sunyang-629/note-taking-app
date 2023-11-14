@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const useAsyncStorage = <T>(key: string, initialValue: T) => {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const isFocused = useIsFocused();
 
   const getValue = async () => {
     try {
@@ -37,8 +39,8 @@ const useAsyncStorage = <T>(key: string, initialValue: T) => {
 
   useEffect(() => {
     console.log("getvalue");
-    getValue();
-  }, []);
+    if (isFocused) getValue();
+  }, [isFocused]);
 
   return { storedValue, setValue, removeValue };
 };
